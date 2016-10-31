@@ -228,7 +228,6 @@ int main(int argc, const char * argv[]) {
         srcs.at(i).print_content();
     }
     
-    cout << v.at(7).get_as();
     
     return 0;
 }
