@@ -99,6 +99,9 @@ public:
     void set_name(string x){
         name = x;
     }
+    void inc_count(){
+        count++;
+    }
     
 };
 
@@ -139,26 +142,36 @@ public:
     void count_types(){
         bool add = false;
         
-        vector<Source> typs;
         
         for(int i = 0; i < lines.size(); i++){
             
-            for(int j = 0; j < typs.size(); j++){
+            for(int j = 0; j < types.size(); j++){
                 
-                if(lines.at(i).get_source() == typs.at(j).get_name()){
-                    typs.at(j).add_line(lines.at(i));
+                if(lines.at(i).get_type() == types.at(j).get_name()){
+                    types.at(j).add_line(lines.at(i));
+                    types.at(j).inc_count();
                     add = true;
                 }
                 
             }
             if(add == false){
-                Type t(lines.at(i).get_source());
+                Type t(lines.at(i).get_type());
                 t.add_line(lines.at(i));
-                typs.push_back(t);
+                t.inc_count();
+                types.push_back(t);
             }
             
             add = false;
         }
+        
+    }
+    void print_content(){
+        cout << name << "\n";
+     
+        for(int i = 0; i < types.size(); i++){
+            cout << types.at(i).get_name() << ": " << types.at(i).get_count() << "\n";
+        }
+        cout << "\n\n";
     }
     
 };
@@ -208,6 +221,11 @@ int main(int argc, const char * argv[]) {
         }
         
         add = false;
+    }
+    
+    for (int i = 0; i < srcs.size(); i++) {
+        srcs.at(i).count_types();
+        srcs.at(i).print_content();
     }
     
     cout << v.at(7).get_as();
