@@ -67,6 +67,102 @@ public:
     }
 };
 
+class Type{
+    string name;
+    int count;
+    vector<Line> lines;
+    
+public:
+    Type(){
+        count = 0;
+        name = "";
+    }
+    Type(string x){
+        count = 0;
+        name = x;
+    }
+    void add_line(Line x){
+        lines.push_back(x);
+    }
+    int get_count(){
+        return count;
+    }
+    string get_name(){
+        return name;
+    }
+    vector<Line> get_lines(){
+        return lines;
+    }
+    void set_count(int x){
+        count = x;
+    }
+    void set_name(string x){
+        name = x;
+    }
+    
+};
+
+
+class Source{
+    string name;
+    int count;
+    vector<Line> lines;
+    vector<Type> types;
+    
+public:
+    Source(){
+        count = 0;
+        name = "";
+    }
+    Source(string x){
+        count = 0;
+        name = x;
+    }
+    int get_count(){
+        return count;
+    }
+    string get_name(){
+        return name;
+    }
+    vector<Line> get_lines(){
+        return lines;
+    }
+    void set_count(int x){
+        count = x;
+    }
+    void set_name(string x){
+        name = x;
+    }
+    void add_line(Line x){
+        lines.push_back(x);
+    }
+    void count_types(){
+        bool add = false;
+        
+        vector<Source> typs;
+        
+        for(int i = 0; i < lines.size(); i++){
+            
+            for(int j = 0; j < typs.size(); j++){
+                
+                if(lines.at(i).get_source() == typs.at(j).get_name()){
+                    typs.at(j).add_line(lines.at(i));
+                    add = true;
+                }
+                
+            }
+            if(add == false){
+                Type t(lines.at(i).get_source());
+                t.add_line(lines.at(i));
+                typs.push_back(t);
+            }
+            
+            add = false;
+        }
+    }
+    
+};
+
 
 
 int main(int argc, const char * argv[]) {
@@ -89,6 +185,30 @@ int main(int argc, const char * argv[]) {
     }
     
     else cout << "Unable to open file";
+    
+    
+    //Creates Vector srcs which has Source types
+    bool add = false;
+    vector<Source> srcs;
+    
+    for(int i = 0; i < v.size(); i++){
+        
+        for(int j = 0; j < srcs.size(); j++){
+            
+            if(v.at(i).get_source() == srcs.at(j).get_name()){
+                srcs.at(j).add_line(v.at(i));
+                add = true;
+            }
+            
+        }
+        if(add == false){
+            Source s(v.at(i).get_source());
+            s.add_line(v.at(i));
+            srcs.push_back(s);
+        }
+        
+        add = false;
+    }
     
     cout << v.at(7).get_as();
     
