@@ -30,167 +30,119 @@ vector<string> split(const string &s, char delim) {
     return elems;
 }
 
-class Line{
-    string as, source, type;
+class Link{
+    string source;
+    int a, b, cp;
     
 public:
-    Line(string x){
+    Link(string x){
         parse_line(x);
     }
     void parse_line(string x){
         vector<string> y = split(x, '|');
-        as = y[0];
-        source = y[1];
-        type = y[2];
-        
+        a = stoi(y[0]);
+        b = stoi(y[1]);
+        cp = stoi(y[2]);
+        source = y[3];
     }
-    void set_as(string x){
-        as = x;
-        return;
+    int get_a(){
+        return a;
     }
-    void set_source(string x){
-        source = x;
-        return;
+    int get_b(){
+        return b;
     }
-    void set_type(string x){
-        type = x;
-        return;
-    }
-    string get_as(){
-        return as;
+    int get_cp(){
+        return cp;
     }
     string get_source(){
         return source;
     }
-    string get_type(){
-        return type;
-    }
-};
-
-class Type{
-    string name;
-    int count;
-    vector<Line> lines;
-    
-public:
-    Type(){
-        count = 0;
-        name = "";
-    }
-    Type(string x){
-        count = 0;
-        name = x;
-    }
-    void add_line(Line x){
-        lines.push_back(x);
-    }
-    int get_count(){
-        return count;
-    }
-    string get_name(){
-        return name;
-    }
-    vector<Line> get_lines(){
-        return lines;
-    }
-    void set_count(int x){
-        count = x;
-    }
-    void set_name(string x){
-        name = x;
-    }
-    void inc_count(){
-        count++;
-    }
     
 };
 
-
-class Source{
-    string name;
-    int count;
-    vector<Line> lines;
-    vector<Type> types;
+class Node{
+    int id;
+    int p_count;
+    int c_count;
+    vector<Link> peers;
+    vector<Link> custs;
     
 public:
-    Source(){
-        count = 0;
-        name = "";
+    Node(){
+        p_count = 0;
+        c_count = 0;
+        id = -1;
     }
-    Source(string x){
-        count = 0;
-        name = x;
+    Node(int x){
+        p_count = 0;
+        c_count = 0;
+        id = x;
     }
-    int get_count(){
-        return count;
+    int get_id(){
+        return id;
     }
-    string get_name(){
-        return name;
+    int get_p_count(){
+        return p_count;
     }
-    vector<Line> get_lines(){
-        return lines;
+    int get_c_count(){
+        return c_count;
     }
-    void set_count(int x){
-        count = x;
+    vector<Link> get_peers(){
+        return peers;
     }
-    void set_name(string x){
-        name = x;
+    vector<Link> get_custs(){
+        return custs;
     }
-    void add_line(Line x){
-        lines.push_back(x);
+    void inc_p_count(){
+        p_count++;
     }
-    void count_types(){
-        bool add = false;
+    void inc_c_count(){
+        c_count++;
+    }
+    void add_cxn(Link x){
+        if(x.get_cp() == 0){
+            peers.push_back(x);
+            p_count++;
+        }
+        else{
+            custs.push_back(x);
+            c_count++;
+        }
+    }
+    void print_edges(){
+        cout << "Node " << id << "\n";
+        cout << "   Peers (" << p_count <<"):\n";
         
-        
-        for(int i = 0; i < lines.size(); i++){
-            
-            for(int j = 0; j < types.size(); j++){
-                
-                if(lines.at(i).get_type() == types.at(j).get_name()){
-                    types.at(j).add_line(lines.at(i));
-                    types.at(j).inc_count();
-                    add = true;
-                }
-                
-            }
-            if(add == false){
-                Type t(lines.at(i).get_type());
-                t.add_line(lines.at(i));
-                t.inc_count();
-                types.push_back(t);
-            }
-            
-            add = false;
+        for (int i = 0; i < peers.size(); i++) {
+            cout << "       " << peers.at(i).get_b() << "\n";
         }
         
-    }
-    void print_content(){
-        cout << name << "\n";
-     
-        for(int i = 0; i < types.size(); i++){
-            cout << types.at(i).get_name() << ": " << types.at(i).get_count() << "\n";
-        }
         cout << "\n\n";
+        cout << "   Customers (" << c_count <<"):\n";
+        
+        for (int i = 0; i < custs.size(); i++) {
+            cout << "       " << custs.at(i).get_b() << "\n";
+        }
+        cout << "\n";
     }
     
+   
 };
-
 
 
 int main(int argc, const char * argv[]) {
     
-    vector<Line> v;
+    vector<Link> v;
     
     string line;
-    ifstream myfile ("/Users/ivancordoba/Desktop/478_p2/478_p2/input.txt");
+    ifstream myfile ("/Users/ivancordoba/Desktop/478_p2/478_p2/input2.txt");
     if (myfile.is_open())
     {
         while ( getline (myfile,line) )
         {
             
             if(line[0] != '#'){
-                Line x(line);
+                Link x(line);
                 v.push_back(x);
             }
         }
@@ -201,32 +153,27 @@ int main(int argc, const char * argv[]) {
     
     
     //Creates Vector srcs which has Source types
-    bool add = false;
-    vector<Source> srcs;
+    vector<Node> nodes;
     
-    for(int i = 0; i < v.size(); i++){
-        
-        for(int j = 0; j < srcs.size(); j++){
-            
-            if(v.at(i).get_source() == srcs.at(j).get_name()){
-                srcs.at(j).add_line(v.at(i));
-                add = true;
-            }
-            
+    Node n(v.at(0).get_a());
+    n.add_cxn(v.at(0));
+    nodes.push_back(n);
+    
+    for(int i = 1; i < v.size(); i++){
+     
+        if(v.at(i).get_a() != v.at(i-1).get_a()){
+            Node n(v.at(i).get_a());
+            n.add_cxn(v.at(i));
+            nodes.push_back(n);
         }
-        if(add == false){
-            Source s(v.at(i).get_source());
-            s.add_line(v.at(i));
-            srcs.push_back(s);
+        else{
+            nodes.back().add_cxn(v.at(i));
         }
         
-        add = false;
     }
     
-    for (int i = 0; i < srcs.size(); i++) {
-        srcs.at(i).count_types();
-        srcs.at(i).print_content();
-    }
+    nodes.at(0).print_edges();
+    
     
     
     return 0;
