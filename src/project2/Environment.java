@@ -11,7 +11,7 @@ public class Environment {
 		BufferedReader r = null;
 		Link currentLink = null;
 		String currentLine = "";
-		int count = 1;
+		int count = 0;
 		try {
 			in = new FileInputStream("./input2.txt");
 			r = new BufferedReader(new InputStreamReader(in));
@@ -20,21 +20,27 @@ public class Environment {
 				if(currentLine.charAt(0) != '#') {
 					links.add(new Link(currentLine));
 					currentLink = links.get(links.size()-1);
+				// Check if the node listed in A already exists in our listing
 					if(nodes.get(currentLink.getA()) == null) {
+					// If not, create a new listing at B with an initial link currentLink
 						nodes.put(currentLink.getA(), new Node(currentLink.getA(), currentLink));
 					}
 					else {
+					//Otherwise just add currentLink to the existing Link list in the node
 						nodes.get(currentLink.getA()).addLink(currentLink);
 					}
+				// Check if the node listed in B already exists in our listing
 					if(nodes.get(currentLink.getB()) == null) {
 						nodes.put(currentLink.getB(), new Node(currentLink.getB(), currentLink));
+						// If not, create a new listing at B with an initial link currentLink
 					}
-					else {
+					else
 						nodes.get(currentLink.getB()).addLink(currentLink);
-					}
+						//Otherwise just add currentLink to the existing Link list in the node
 				}
 				currentLine = r.readLine();
 				count++;
+				
 			} while(currentLine != null);
 			r.close();
 			in.close();
@@ -55,11 +61,11 @@ public class Environment {
 		    System.out.println("Link objects created: " + links.size());
 		    System.out.println("Node objects created: " + nodes.size());
 			nodes.get(3).printNode();
-			histogramPls(nodes);
+			histogram(nodes);
 		}
 	}
 	
-	private static void histogramPls(HashMap<Integer, Node> nodes) {
+	private static void histogram(HashMap<Integer, Node> nodes) {
 		Set<Integer> setk = nodes.keySet();
 		int arr[] = {0,0,0,0,0,0};
 		int curr = 0;
@@ -68,16 +74,16 @@ public class Environment {
 		    if(curr == 1) {
 		    	arr[0]++;
 		    }
-		    else if(curr > 1 && curr <= 5) {
+		    else if(curr > 1 && curr < 5) {
 		    	arr[1]++;
 		    }
-		    else if(curr > 5 && curr <= 100) {
+		    else if(curr >= 5 && curr < 100) {
 		    	arr[2]++;
 		    }
-		    else if(curr > 100 && curr <= 200) {
+		    else if(curr >= 100 && curr < 200) {
 		    	arr[3]++;
 		    }
-		    else if(curr > 200 && curr <= 1000) {
+		    else if(curr >= 200 && curr < 1000) {
 		    	arr[4]++;
 		    }
 		    else {

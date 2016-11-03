@@ -3,11 +3,13 @@ package project2;
 import java.util.ArrayList;
 
 public class Node {
-	int ASnum;
-	ArrayList<Link> isProviderIn = new ArrayList<Link>();
-	ArrayList<Link> isCustomerIn = new ArrayList<Link>();
-	ArrayList<Link> isPeerIn = new ArrayList<Link>();
+	// Attributes
+	private int ASnum;
+	private ArrayList<Link> isProviderIn = new ArrayList<Link>();
+	private ArrayList<Link> isCustomerIn = new ArrayList<Link>();
+	private ArrayList<Link> isPeerIn = new ArrayList<Link>();
 	
+	// Constructors
 	Node(int id, Link first) {
 		if(first.getType() == -1) {
 			if(first.getA() == id) {
@@ -22,7 +24,6 @@ public class Node {
 		}
 		this.ASnum = id;
 	}
-	
 	public void addLink(Link toAdd) {
 		if(toAdd.getType() == -1) {
 			if(toAdd.getA() == this.ASnum) {
@@ -37,12 +38,13 @@ public class Node {
 		}
 	}
 	
+	// Structure output methods
 	public int getDegree() {
 		return isProviderIn.size() + isCustomerIn.size() + isPeerIn.size();
 	}
 	
 	public void printNode() {
-		System.out.println("Node #" + ASnum + " is Provider in " + isProviderIn.size() + " links, a customer in " + isCustomerIn.size() + " links and a peer in " + isPeerIn.size() + " links.");
+		System.out.println("Node #" + ASnum + ":\n\tis a provider in " + isProviderIn.size() + " links\n\tis a customer in " + isCustomerIn.size() + " links\n\tis a peer in " + isPeerIn.size() + " links.");
 	}
 	
 }

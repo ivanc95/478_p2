@@ -1,0 +1,19 @@
+// Check if the node listed in A already exists in our listing
+					if(!n.contains(currentLink.getA())) {
+					// If not, create a new listing at B with an initial link currentLink
+						nodes.put(currentLink.getA(), new Node(currentLink.getA(), currentLink));
+						n.add(currentLink.getA());
+					}
+					else {
+					//Otherwise just add currentLink to the existing Link list in the node
+						nodes.get(currentLink.getA()).addLink(currentLink);
+					}
+				// Check if the node listed in B already exists in our listing
+					if(!n.contains(currentLink.getB())) {
+						nodes.put(currentLink.getB(), new Node(currentLink.getB(), currentLink));
+						// If not, create a new listing at B with an initial link currentLink
+						n.add(currentLink.getB());
+					}
+					else
+						nodes.get(currentLink.getB()).addLink(currentLink);
+						//Otherwise just add currentLink to the existing Link list in the node
